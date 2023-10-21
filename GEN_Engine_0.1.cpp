@@ -1,4 +1,4 @@
-﻿#include "Includes/GLFW/glfw3.h" 
+#include "Includes/GLFW/glfw3.h" 
 
 #include <iostream>
 #include <conio.h>
@@ -9,9 +9,6 @@ class Window {
 
 public:
     int init() {
-        float square_X = 0.0f;
-        float square_Y = 0.0f;
-
         GLFWwindow* window; // Объявляем указатель на окно GLFW
 
         /* Инициализируем библиотеку */
@@ -28,46 +25,48 @@ public:
 
         /* Делаем контекст окна текущим */
         glfwMakeContextCurrent(window);
-        program_started(window, square_X, square_Y);
+        program_started(window);
     }
 
 private:
-    // функчия обновлния
-    void program_started(GLFWwindow* window, float square_X, float square_Y) {
-
-    while (!glfwWindowShouldClose(window)){
-        key_pressing(square_X, square_Y);
-
-        /* Рендеринг здесь */
-        glClear(GL_COLOR_BUFFER_BIT); // Очищаем буфер цвета
-
-       draw_square(square_X, square_Y);
+    float square_X = 0.0f;
+    float square_Y = 0.0f;
         
-        /* Обмен фронтального и заднего буферов */
-        glfwSwapBuffers(window);
-        glfwPollEvents(); // Обрабатываем события
-    }
+    // функчия обновлния
+    void program_started(GLFWwindow* window) {
 
-    glfwTerminate(); // Завершаем GLFW
+        while (!glfwWindowShouldClose(window)){
+            key_pressing(window);
+
+            /* Рендеринг здесь */
+            glClear(GL_COLOR_BUFFER_BIT); // Очищаем буфер цвета
+
+           draw_square();
+        
+            /* Обмен фронтального и заднего буферов */
+            glfwSwapBuffers(window);
+            glfwPollEvents(); // Обрабатываем события
+        }
+
+        glfwTerminate(); // Завершаем GLFW
     }
 
     // функция обработки нажатий
-    void key_pressing(float square_X, float square_Y) {
-        if (_kbhit()) {
-            // Получаем код клавиши
-            char key = _getch();
+    void key_pressing(GLFWwindow* window) {
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            square_Y -= 0.01f;
+            std::cout << "Y\n";
 
-            // Обработка нажатия клавиши
-            if (key == 'q' || key == 'Q') {
-                std::cout << key << std::endl;
-            }
+        }
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+            square_Y += 0.01f;
+            std::cout << "Y\n";
 
-            // Другие обработки клавиш можно добавить здесь
         }
     }
 
     // функчия рисовки
-    void draw_square(float square_X, float square_Y) {
+    void draw_square() {
         glBegin(GL_QUADS);
 
             glVertex2f(-0.5f + square_X, 0.5f + square_Y); // Верхний левый угол
@@ -83,6 +82,7 @@ private:
 
 int main()
 {
+    setlocale(NULL, "RUS");
     Window Class_Window;
 
     Class_Window.init();
